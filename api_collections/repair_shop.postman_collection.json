@@ -1,0 +1,875 @@
+{
+  "info": {
+    "_postman_id": "b1c2d3e4-f5a6-7890-b1c2-d3e4f5a67890",
+    "name": "Repair Shop Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"your_password\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<your_refresh_token>\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"new_user\",\n  \"password\": \"password123\",\n  \"permissions\": [\"tasks:create\", \"tasks:edit\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updated_user\",\n  \"permissions\": [\"tasks:create\", \"tasks:edit\", \"tasks:delete\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_fname\": \"John\",\n  \"customer_lname\": \"Doe\",\n  \"customer_email\": \"john@example.com\",\n  \"customer_phone\": \"1234567890\",\n  \"title\": \"Screen replacement\",\n  \"description\": \"Replace cracked screen\",\n  \"location_id\": 1,\n  \"device_type_id\": 2,\n  \"problem_type_id\": 3,\n  \"status_id\": 1\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks?limit=25&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "limit", "value": "25" },
+                { "key": "page", "value": "1" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status_id\": 2,\n  \"description\": \"Updated description\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/:id/archive",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", ":id", "archive"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", ":id", "restore"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Create Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Main Branch\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Locations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Updated Branch Name\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Location",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["tags"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Urgent\", \"color\": \"#ff0000\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tags",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["tags"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tag",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tags/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tags", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Tag",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tags/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tags", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"High Priority\", \"color\": \"#ff6600\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tag",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tags/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tags", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Device Types",
+      "item": [
+        {
+          "name": "Create Device Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deviceTypes",
+              "host": ["{{baseUrl}}"],
+              "path": ["deviceTypes"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Smartphone\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Device Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deviceTypes",
+              "host": ["{{baseUrl}}"],
+              "path": ["deviceTypes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Device Type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deviceTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["deviceTypes", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Device Type",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deviceTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["deviceTypes", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Tablet\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Device Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deviceTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["deviceTypes", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Problem Types",
+      "item": [
+        {
+          "name": "Create Problem Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/problemTypes",
+              "host": ["{{baseUrl}}"],
+              "path": ["problemTypes"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Screen Damage\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Problem Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/problemTypes",
+              "host": ["{{baseUrl}}"],
+              "path": ["problemTypes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Problem Type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/problemTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["problemTypes", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Problem Type",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/problemTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["problemTypes", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Battery Issue\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Problem Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/problemTypes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["problemTypes", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Statuses",
+      "item": [
+        {
+          "name": "Create Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statuses",
+              "host": ["{{baseUrl}}"],
+              "path": ["statuses"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"In Progress\", \"color\": \"#00ff00\" }"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statuses",
+              "host": ["{{baseUrl}}"],
+              "path": ["statuses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statuses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["statuses", ":id"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statuses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["statuses", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"name\": \"Completed\", \"color\": \"#0000ff\" }"
+            }
+          },
+          "response": [] 
+        },
+        {
+          "name": "Delete Status",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer <jwt_token>"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statuses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["statuses", ":id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
