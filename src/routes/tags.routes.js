@@ -3,6 +3,7 @@ const router = express.Router();
 const tagsController = require('../controllers/tags.controller');
 const { auth } = require('../middlewares/auth');
 const { permission } = require('../middlewares/permission');
+const { validateId } = require('../middlewares/params');
 
 // All tag routes require authentication
 router.use(auth);
@@ -14,12 +15,12 @@ router.post('/', permission('tags'), tagsController.create);
 router.get('/', permission('tags'), tagsController.list);
 
 // Get single tag
-router.get('/:id', permission('tags'), tagsController.get);
+router.get('/:id', permission('tags'), validateId, tagsController.get);
 
 // Update tag
-router.patch('/:id', permission('tags'), tagsController.update);
+router.patch('/:id', permission('tags'), validateId, tagsController.update);
 
 // Delete tag
-router.delete('/:id', permission('tags'), tagsController.delete);
+router.delete('/:id', permission('tags'), validateId, tagsController.delete);
 
 module.exports = router;

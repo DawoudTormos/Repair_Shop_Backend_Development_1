@@ -3,6 +3,7 @@ const router = express.Router();
 const usersController = require('../controllers/users.controller');
 const { auth } = require('../middlewares/auth');
 const { permission } = require('../middlewares/permission');
+const { validateId } = require('../middlewares/params');
 
 // All user routes require authentication
 router.use(auth);
@@ -14,10 +15,10 @@ router.post('/', permission('users'), usersController.create);
 router.get('/', permission('users'), usersController.list);
 
 // Update user
-router.patch('/:id', permission('users'), usersController.update);
-router.patch('/:id/password', permission('users'), usersController.changePassword);
+router.patch('/:id', permission('users'), validateId, usersController.update);
+router.patch('/:id/password', permission('users'), validateId, usersController.changePassword);
 
 // Delete user
-router.delete('/:id', permission('users'), usersController.delete);
+router.delete('/:id', permission('users'), validateId, usersController.delete);
 
 module.exports = router;

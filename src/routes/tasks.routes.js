@@ -3,6 +3,7 @@ const router = express.Router();
 const tasksController = require('../controllers/tasks.controller');
 const { auth } = require('../middlewares/auth');
 const { permission } = require('../middlewares/permission');
+const { validateId } = require('../middlewares/params');
 
 // All task routes require authentication
 router.use(auth);
@@ -14,18 +15,18 @@ router.post('/', permission('tasks'), tasksController.create);
 router.get('/', permission('tasks'), tasksController.list);
 
 // Get single task
-router.get('/:id', permission('tasks'), tasksController.get);
+router.get('/:id', permission('tasks'), validateId, tasksController.get);
 
 // Update task
-router.patch('/:id', permission('tasks'), tasksController.update);
+router.patch('/:id', permission('tasks'), validateId, tasksController.update);
 
 // Delete task
-router.delete('/:id', permission('tasks'), tasksController.delete);
+router.delete('/:id', permission('tasks'), validateId, tasksController.delete);
 
 // Archive task (soft‑delete)
-router.post('/:id/archive', permission('tasks'), tasksController.archive);
+router.post('/:id/archive', permission('tasks'), validateId, tasksController.archive);
 
 // Restore archived task
-router.post('/:id/restore', permission('tasks'), tasksController.restore);
+router.post('/:id/restore', permission('tasks'), validateId, tasksController.restore);
 
 module.exports = router;

@@ -3,6 +3,7 @@ const router = express.Router();
 const locationsController = require('../controllers/locations.controller');
 const { auth } = require('../middlewares/auth');
 const { permission } = require('../middlewares/permission');
+const { validateId } = require('../middlewares/params');
 
 // All location routes require authentication
 router.use(auth);
@@ -14,12 +15,12 @@ router.post('/', permission('locations'), locationsController.create);
 router.get('/', permission('locations'), locationsController.list);
 
 // Get single location
-router.get('/:id', permission('locations'), locationsController.get);
+router.get('/:id', permission('locations'), validateId, locationsController.get);
 
 // Update location
-router.patch('/:id', permission('locations'), locationsController.update);
+router.patch('/:id', permission('locations'), validateId, locationsController.update);
 
 // Delete location
-router.delete('/:id', permission('locations'), locationsController.delete);
+router.delete('/:id', permission('locations'), validateId, locationsController.delete);
 
 module.exports = router;
