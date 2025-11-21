@@ -1,0 +1,54 @@
+This file specifies the version of node.js and npm that was used in development and is guaranteed to work and how to setup the app.
+
+Node.js Version: v22.14.0
+NPM Version: 11.3.0
+
+There is the versions of all the libraries and 3rd party code in:
+File: package.json
+
+
+To setup the app:
+
+
+    # Database:
+
+        1.Make the db
+
+            U need a postgresql server to guarantee everything works well.
+
+            create a db with any name(use same name in DATABASE_URL :) ). Then add the DATABASE_URL to .env file.
+            
+                example:
+                DATABASE_URL: postgresql://postgres:admin@localhost:5432/repair_shop_db
+
+        2. Create the db.
+
+            Run the sql migrations from directory root/migrations in db u created.
+            Run them in the order of their numbering.
+
+        3.Create the admin or update its password using the script set-admin.js
+        
+            CLI:
+                node root/scripts/set-admin.js <username> <new_password>
+
+                the username and new_password parameters are the new credentials of the admin.
+
+
+    # .env file:
+        Add any other environment variables you need.
+        - Port
+            PORT:3000
+
+
+    # Run the server
+
+        1. Install dependencies
+            npm install
+        2. Run server.js 
+            npm start 
+            or 
+            node server.js
+
+
+
+
