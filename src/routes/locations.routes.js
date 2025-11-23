@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('locations'), locationsController.create);
 
 // List locations
-router.get('/', permission('locations'), locationsController.list);
+router.get('/', permission(['locations', 'tasks']), locationsController.list);
 
 // Get single location
 router.get('/:id', permission('locations'), validateId, locationsController.get);

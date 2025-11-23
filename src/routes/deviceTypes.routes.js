@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('deviceTypes'), deviceTypesController.create);
 
 // List device types
-router.get('/', permission('deviceTypes'), deviceTypesController.list);
+router.get('/', permission(['deviceTypes', 'tasks']), deviceTypesController.list);
 
 // Get single device type
 router.get('/:id', permission('deviceTypes'), validateId, deviceTypesController.get);

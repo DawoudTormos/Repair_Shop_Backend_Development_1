@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('tags'), tagsController.create);
 
 // List tags
-router.get('/', permission('tags'), tagsController.list);
+router.get('/', permission(['tags', 'tasks']), tagsController.list);
 
 // Get single tag
 router.get('/:id', permission('tags'), validateId, tagsController.get);

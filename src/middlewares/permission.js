@@ -32,8 +32,12 @@ module.exports = {
           console.error('Permission fetch error:', err);
           return res.status(500).json({ error: 'Internal server error' });
         }
-  
-        if (Array.isArray(userPermissions) && userPermissions.some(p => p.startsWith(`${requiredPermission}:`))) {
+
+        // Normalize requiredPermission to an array
+        const requiredPermissions = Array.isArray(requiredPermission) ? requiredPermission : [requiredPermission];
+
+        if (Array.isArray(userPermissions) && userPermissions.some(p => requiredPermissions.includes(p))) {
+          console.log('Permission granted for user with permissions:', userPermissions, 'for required permissions:', requiredPermissions);
           return next();
         }
   

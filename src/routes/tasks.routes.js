@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('tasks'), tasksController.create);
 
 // List tasks (supports pagination & filtering)
-router.get('/', permission('tasks'), tasksController.list);
+router.get('/', permission(['tasks', 'deviceTypes']), tasksController.list);
 
 // Get single task
 router.get('/:id', permission('tasks'), validateId, tasksController.get);

@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('statuses'), statusesController.create);
 
 // List statuses
-router.get('/', permission('statuses'), statusesController.list);
+router.get('/', permission(['statuses', 'tasks']), statusesController.list);
 
 // Get single status
 router.get('/:id', permission('statuses'), validateId, statusesController.get);

@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('problemTypes'), problemTypesController.create);
 
 // List problem types
-router.get('/', permission('problemTypes'), problemTypesController.list);
+router.get('/', permission(['problemTypes', 'tasks']), problemTypesController.list);
 
 // Get single problem type
 router.get('/:id', permission('problemTypes'), validateId, problemTypesController.get);
