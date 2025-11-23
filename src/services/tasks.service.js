@@ -8,37 +8,15 @@ function buildFilters(params) {
   const values = [];
   let idx = 1;
 
-  // Date range – default to last month if not provided
-  const now = new Date();
-  const defaultStart = new Date(now);
-  defaultStart.setMonth(defaultStart.getMonth() - 1);
-  const startDate = params.startDate || defaultStart.toISOString();
-  const endDate = params.endDate || now.toISOString();
+  // Date range is required
+  const { startDate, endDate } = params;
+  if (!startDate || !endDate) {
+    // This case should be handled in the controller before calling buildFilters
+    return { error: 'Start date and end date are required' };
+  }
 
   conditions.push(`created_at BETWEEN $${idx++} AND $${idx++}`);
   values.push(startDate, endDate);
-
-  if (params.locationId) {
-    conditions.push(`location_id = $${idx++}`);
-    values.push(params.locationId);
-  }
-  if (params.deviceTypeId) {
-    conditions.push(`device_type_id = $${idx++}`);
-    values.push(params.deviceTypeId);
-  }
-  if (params.problemTypeId) {
-    conditions.push(`problem_type_id = $${idx++}`);
-    values.push(params.problemTypeId);
-  }
-  if (params.statusId) {
-    conditions.push(`status_id = $${idx++}`);
-    values.push(params.statusId);
-  }
-  if (params.tagId) {
-    // Join with task_tags for tag filtering
-    conditions.push(`id IN (SELECT task_id FROM task_tags WHERE tag_id = $${idx++})`);
-    values.push(params.tagId);
-  }
 
   return { conditions, values };
 }
@@ -99,8 +77,12 @@ async function listTasks(query) {
   const limit = parseInt(query.limit, 10) || 25; // default per spec
   const offset = (page - 1) * limit;
 
-  const { conditions, values } = buildFilters(query);
-  const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const { conditions, values, error } = buildFilters(query);
+  if (error) {
+    // This should ideally be caught by the controller, but as a safeguard:
+    throw new Error(error);
+  }
+  const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
   // Total count
   const countResult = await db.query(

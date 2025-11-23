@@ -1,7 +1,8 @@
 {
 	"info": {
 		"_postman_id": "a8a0b6a4-a1f1-47fe-ba34-8f6d4d44c2e1",
-		"name": "Tasks API",
+		"name": "Tasks API 2",
+		"comment":" Updated collection name to 'Tasks API 2' for postman",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -36,132 +37,30 @@
 				},
 				{
 					"name": "List Tasks",
-					"item": [
-						{
-							"name": "List Tasks (Default)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tasks",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tasks"
-									]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tasks?startDate=2023-01-01&endDate=2023-01-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-01-31"
 								}
-							},
-							"response": []
-						},
-						{
-							"name": "List Tasks (Paginated)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tasks?page=2&limit=10",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tasks"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "2"
-										},
-										{
-											"key": "limit",
-											"value": "10"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "List Tasks (Filtered by Status)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tasks?statusId=2",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tasks"
-									],
-									"query": [
-										{
-											"key": "statusId",
-											"value": "2"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "List Tasks (Filtered by Date Range)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tasks?startDate=2023-01-01&endDate=2023-01-31",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tasks"
-									],
-									"query": [
-										{
-											"key": "startDate",
-											"value": "2023-01-01"
-										},
-										{
-											"key": "endDate",
-											"value": "2023-01-31"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "List Tasks (Filtered by Location and Device Type)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tasks?locationId=1&deviceTypeId=2",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tasks"
-									],
-									"query": [
-										{
-											"key": "locationId",
-											"value": "1"
-										},
-										{
-											"key": "deviceTypeId",
-											"value": "2"
-										}
-									]
-								}
-							},
-							"response": []
+							]
 						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Get Task",
