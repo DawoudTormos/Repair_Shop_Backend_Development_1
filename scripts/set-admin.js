@@ -24,26 +24,13 @@ const ADMIN_ID = 1;
 
 // All possible permissions (admin has everything)
 const ALL_PERMISSIONS = [
-  'tasks:create',
-  'tasks:edit',
-  'tasks:delete',
-  'users:edit',
-  'users:delete',
-  'locations:create',
-  'locations:edit',
-  'locations:delete',
-  'tags:create',
-  'tags:edit',
-  'tags:delete',
-  'deviceTypes:create',
-  'deviceTypes:edit',
-  'deviceTypes:delete',
-  'problemTypes:create',
-  'problemTypes:edit',
-  'problemTypes:delete',
-  'statuses:create',
-  'statuses:edit',
-  'statuses:delete',
+  'tasks',
+  'users',
+  'locations',
+  'tags',
+  'deviceTypes',
+  'problemTypes',
+  'statuses',
 ];
 
 async function main() {
