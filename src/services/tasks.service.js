@@ -73,10 +73,6 @@ async function createTask(data, createdByUserId) {
  * @returns {Promise<Object>} { total, page, limit, totalPages, data }
  */
 async function listTasks(query) {
-  const page = parseInt(query.page, 10) || 1;
-  const limit = parseInt(query.limit, 10) || 25; // default per spec
-  const offset = (page - 1) * limit;
-
   const { conditions, values, error } = buildFilters(query);
   if (error) {
     // This should ideally be caught by the controller, but as a safeguard:
@@ -84,26 +80,20 @@ async function listTasks(query) {
   }
   const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
-  // Total count
   const countResult = await db.query(
     `SELECT COUNT(*) FROM tasks ${whereClause}`,
     values
   );
   const total = parseInt(countResult.rows[0].count, 10);
 
-  // Data rows
   const dataResult = await db.query(
     `SELECT * FROM tasks ${whereClause}
-     ORDER BY created_at DESC
-     LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
-    [...values, limit, offset]
+     ORDER BY created_at DESC`,
+    values
   );
 
   return {
     total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
     data: dataResult.rows,
   };
 }

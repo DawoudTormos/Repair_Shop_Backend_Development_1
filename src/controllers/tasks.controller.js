@@ -105,10 +105,6 @@ async function list(req, res) {
     return res.status(400).json({ error: 'Start date and end date are required' });
   }
 
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 25;
-  const offset = (page - 1) * limit;
-
   const { conditions, values, error } = buildFilters(req.query);
   if (error) {
     return res.status(400).json({ error });
@@ -124,16 +120,12 @@ async function list(req, res) {
 
     const dataResult = await db.query(
       `SELECT * FROM tasks ${whereClause}
-       ORDER BY created_at DESC
-       LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
-      [...values, limit, offset]
+       ORDER BY created_at DESC`,
+      values
     );
 
     res.json({
-      page,
-      limit,
       total,
-      totalPages: Math.ceil(total / limit),
       data: dataResult.rows,
     });
   } catch (err) {

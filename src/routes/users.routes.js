@@ -12,7 +12,7 @@ router.use(auth);
 router.post('/', permission('users'), usersController.create);
 
 // Get all users – admin can view all, others may be restricted later
-router.get('/', permission('users'), usersController.list);
+router.get('/', permission(['users' , 'tasks']), usersController.list);
 
 // Update user
 router.patch('/:id', permission('users'), validateId, usersController.update);
