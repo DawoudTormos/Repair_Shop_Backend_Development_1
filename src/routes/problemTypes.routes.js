@@ -15,7 +15,7 @@ router.post('/', permission('problemTypes'), problemTypesController.create);
 router.get('/', permission(['problemTypes', 'tasks']), problemTypesController.list);
 
 // Get single problem type
-router.get('/:id', permission('problemTypes'), validateId, problemTypesController.get);
+router.get('/:id', permission(['problemTypes', 'tasks']), validateId, problemTypesController.get);
 
 // Update problem type
 router.patch('/:id', permission('problemTypes'), validateId, problemTypesController.update);

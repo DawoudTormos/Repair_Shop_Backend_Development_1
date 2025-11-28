@@ -14,6 +14,9 @@ router.post('/', permission('users'), usersController.create);
 // Get all users – admin can view all, others may be restricted later
 router.get('/', permission(['users' , 'tasks']), usersController.list);
 
+// Get a single user by id
+router.get('/:id', permission(['users' , 'tasks']), validateId, usersController.get);
+
 // Update user
 router.patch('/:id', permission('users'), validateId, usersController.update);
 router.patch('/:id/password', permission('users'), validateId, usersController.changePassword);

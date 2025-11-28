@@ -15,7 +15,7 @@ router.post('/', permission('tags'), tagsController.create);
 router.get('/', permission(['tags', 'tasks']), tagsController.list);
 
 // Get single tag
-router.get('/:id', permission('tags'), validateId, tagsController.get);
+router.get('/:id', permission(['tags', 'tasks']), validateId, tagsController.get);
 
 // Update tag
 router.patch('/:id', permission('tags'), validateId, tagsController.update);

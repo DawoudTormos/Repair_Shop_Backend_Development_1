@@ -15,7 +15,7 @@ router.post('/', permission('statuses'), statusesController.create);
 router.get('/', permission(['statuses', 'tasks']), statusesController.list);
 
 // Get single status
-router.get('/:id', permission('statuses'), validateId, statusesController.get);
+router.get('/:id', permission(['statuses', 'tasks']), validateId, statusesController.get);
 
 // Update status
 router.patch('/:id', permission('statuses'), validateId, statusesController.update);

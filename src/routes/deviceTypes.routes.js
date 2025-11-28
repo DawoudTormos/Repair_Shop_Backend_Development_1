@@ -15,7 +15,7 @@ router.post('/', permission('deviceTypes'), deviceTypesController.create);
 router.get('/', permission(['deviceTypes', 'tasks']), deviceTypesController.list);
 
 // Get single device type
-router.get('/:id', permission('deviceTypes'), validateId, deviceTypesController.get);
+router.get('/:id', permission(['deviceTypes', 'tasks']), validateId, deviceTypesController.get);
 
 // Update device type
 router.patch('/:id', permission('deviceTypes'), validateId, deviceTypesController.update);

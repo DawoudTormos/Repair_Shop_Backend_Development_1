@@ -15,7 +15,7 @@ router.post('/', permission('locations'), locationsController.create);
 router.get('/', permission(['locations', 'tasks']), locationsController.list);
 
 // Get single location
-router.get('/:id', permission('locations'), validateId, locationsController.get);
+router.get('/:id', permission(['locations', 'tasks']), validateId, locationsController.get);
 
 // Update location
 router.patch('/:id', permission('locations'), validateId, locationsController.update);
