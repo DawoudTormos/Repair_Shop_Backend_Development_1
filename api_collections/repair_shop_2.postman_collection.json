@@ -262,14 +262,7 @@
           "name": "Get Device Type",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer <jwt_token>",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
+            "header": [],
             "auth": {
               "type": "noauth"
             },
@@ -288,7 +281,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": ""
+                  "value": "1"
                 }
               ]
             }
@@ -487,7 +480,12 @@
                 ":id"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
             }
           }
         },
@@ -860,14 +858,7 @@
           "name": "Get Tag",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer <jwt_token>",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
+            "header": [],
             "auth": {
               "type": "noauth"
             },
@@ -883,7 +874,12 @@
                 ":id"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
             }
           }
         },
@@ -1234,7 +1230,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_fname\": \"John\",\n  \"customer_lname\": \"Doe\",\n  \"customer_email\": \"john@example.com\",\n  \"customer_phone\": \"1234567890\",\n  \"title\": \"Screen replacement\",\n  \"description\": \"Replace cracked screen\",\n  \"location_id\": 1,\n  \"device_type_id\": 1,\n  \"problem_type_id\": 1,\n  \"status_id\": 1\n}",
+              "raw": "{\n  \"customer_fname\": \"John2\",\n  \"customer_lname\": \"Doe2\",\n  \"customer_email\": \"john@example.com\",\n  \"customer_phone\": \"1234567890\",\n  \"title\": \"Screen replacement\",\n  \"description\": \"Replace cracked screen\",\n  \"location_id\": 1,\n  \"device_type_id\": 1,\n  \"problem_type_id\": 1,\n  \"status_id\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1276,14 +1272,7 @@
           "name": "Get Task",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer <jwt_token>",
-                "disabled": false,
-                "type": "default"
-              }
-            ],
+            "header": [],
             "auth": {
               "type": "noauth"
             },
@@ -1299,7 +1288,12 @@
                 ":id"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6"
+                }
+              ]
             }
           }
         },
@@ -1539,7 +1533,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "2"
+                  "value": "4"
                 }
               ]
             }
