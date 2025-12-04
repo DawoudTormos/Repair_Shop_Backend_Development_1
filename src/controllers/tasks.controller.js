@@ -1,26 +1,5 @@
-const db = require('../config/db');
 const tasksService = require('../services/tasks.service');
 
-/**
- * Helper to build WHERE clauses based on query parameters.
- */
-function buildFilters(params) {
-  const conditions = [];
-  const values = [];
-  let idx = 1;
-
-  // Date range is required
-  const { startDate, endDate } = params;
-  if (!startDate || !endDate) {
-    // This case should be handled in the controller before calling buildFilters
-    return { error: 'Start date and end date are required' };
-  }
-
-  conditions.push(`created_at BETWEEN $${idx++} AND $${idx++}`);
-  values.push(startDate, endDate);
-
-  return { conditions, values };
-}
 
 /**
  * Create a new task.
@@ -42,7 +21,7 @@ async function create(req, res) {
     device_type_id,
     problem_type_id,
     status_id,
-    tags = [] // Add tags field with default empty array
+    tags = []
   } = req.body;
 
   // Validate required fields
@@ -61,25 +40,15 @@ async function create(req, res) {
     return res.status(400).json({ error: 'All task fields are required' });
   }
 
-  // Validate tags if provided
+  // Validate tags array
   if (tags && !Array.isArray(tags)) {
     return res.status(400).json({ error: 'Tags must be an array of tag IDs' });
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO tasks
-        (customer_fname, customer_lname, customer_email, customer_phone,
-         title, description,
-         location_id, device_type_id, problem_type_id, status_id,
-         created_by_user_id)
-       VALUES
-        ($1, $2, $3, $4,
-         $5, $6,
-         $7, $8, $9, $10,
-         $11)
-       RETURNING *`,
-      [
+    // Use service to create the task
+    const newTask = await tasksService.createTask(
+      {
         customer_fname,
         customer_lname,
         customer_email,
@@ -89,17 +58,18 @@ async function create(req, res) {
         location_id,
         device_type_id,
         problem_type_id,
-        status_id,
-        req.user.id, // creator
-      ]
+        status_id
+      },
+      req.user.id
     );
-    // If tags were provided, create associations
+
+    // Set tags if any
     if (tags.length > 0) {
-      await tasksService.setTaskTags(rows[0].id, tags);
+      await tasksService.setTaskTags(newTask.id, tags);
     }
 
-    // Get full task details with tags
-    const fullTask = await tasksService.getTaskById(rows[0].id);
+    // Return full task with tags
+    const fullTask = await tasksService.getTaskById(newTask.id);
     res.status(201).json(fullTask);
   } catch (err) {
     console.error('Create task error:', err);
@@ -152,58 +122,25 @@ async function get(req, res) {
  */
 async function update(req, res) {
   const { id } = req.params;
-  const allowedFields = [
-    'customer_fname',
-    'customer_lname',
-    'customer_email',
-    'customer_phone',
-    'title',
-    'description',
-    'location_id',
-    'device_type_id',
-    'problem_type_id',
-    'status_id',
-  ];
+  const { tags, ...fields } = req.body;
 
-  const fields = [];
-  const values = [];
-  let idx = 1;
-
-  for (const field of allowedFields) {
-    if (req.body[field] !== undefined) {
-      fields.push(`${field} = $${idx++}`);
-      values.push(req.body[field]);
-    }
+  // Use service to update task fields
+  const updatedTask = await tasksService.updateTask(id, fields);
+  if (!updatedTask) {
+    return res.status(404).json({ error: 'Task not found or no fields to update' });
   }
 
-  if (fields.length === 0) {
-    return res.status(400).json({ error: 'No updatable fields provided' });
+  // Update tags if provided
+  if (tags) {
+    if (!Array.isArray(tags)) {
+      return res.status(400).json({ error: 'Tags must be an array of tag IDs' });
+    }
+    await tasksService.setTaskTags(id, tags);
   }
 
-  values.push(id);
-  const setClause = fields.join(', ');
-  const query = `UPDATE tasks SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = $${idx} RETURNING *`;
-
-  try {
-    const { rows } = await db.query(query, values);
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-    // Update tags if provided
-    if (req.body.tags) {
-      if (!Array.isArray(req.body.tags)) {
-        return res.status(400).json({ error: 'Tags must be an array of tag IDs' });
-      }
-      await tasksService.setTaskTags(id, req.body.tags);
-    }
-
-    // Get updated task with tags
-    const fullTask = await tasksService.getTaskById(id);
-    res.json(fullTask);
-  } catch (err) {
-    console.error('Update task error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+  // Return full task with tags
+  const fullTask = await tasksService.getTaskById(id);
+  res.json(fullTask);
 }
 
 /**
@@ -212,8 +149,8 @@ async function update(req, res) {
 async function _delete(req, res) {
   const { id } = req.params;
   try {
-    const { rowCount } = await db.query('DELETE FROM tasks WHERE id = $1', [id]);
-    if (rowCount === 0) {
+    const deleted = await tasksService.deleteTask(id);
+    if (!deleted) {
       return res.status(404).json({ error: 'Task not found' });
     }
     res.status(204).send();
@@ -229,16 +166,10 @@ async function _delete(req, res) {
 async function archive(req, res) {
   const { id } = req.params;
   try {
-    const { rows } = await db.query(
-      `UPDATE tasks SET archived_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $1 AND archived_at IS NULL
-       RETURNING *`,
-      [id]
-    );
-    if (rows.length === 0) {
+    const archived = await tasksService.archiveTask(id);
+    if (!archived) {
       return res.status(404).json({ error: 'Task not found or already archived' });
     }
-    // Return the full task (including tags) after archiving
     const fullTask = await tasksService.getTaskById(id);
     res.json(fullTask);
   } catch (err) {
@@ -253,16 +184,10 @@ async function archive(req, res) {
 async function restore(req, res) {
   const { id } = req.params;
   try {
-    const { rows } = await db.query(
-      `UPDATE tasks SET archived_at = NULL, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $1 AND archived_at IS NOT NULL
-       RETURNING *`,
-      [id]
-    );
-    if (rows.length === 0) {
+    const restored = await tasksService.restoreTask(id);
+    if (!restored) {
       return res.status(404).json({ error: 'Task not found or not archived' });
     }
-    // Return the full task (including tags) after restoring
     const fullTask = await tasksService.getTaskById(id);
     res.json(fullTask);
   } catch (err) {
