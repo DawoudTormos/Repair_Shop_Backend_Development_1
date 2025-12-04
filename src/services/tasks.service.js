@@ -104,7 +104,16 @@ async function listTasks(query) {
  * @returns {Promise<Object|null>}
  */
 async function getTaskById(id) {
-  const { rows } = await db.query('SELECT * FROM tasks WHERE id = $1', [id]);
+  const { rows } = await db.query(
+    `SELECT t.*,
+      COALESCE(json_agg(tg.*) FILTER (WHERE tg.id IS NOT NULL), '[]') AS tags
+    FROM tasks t
+    LEFT JOIN task_tags tt ON t.id = tt.task_id
+    LEFT JOIN tags tg ON tt.tag_id = tg.id
+    WHERE t.id = $1
+    GROUP BY t.id`,
+    [id]
+  );
   return rows[0] || null;
 }
 
@@ -189,6 +198,35 @@ async function restoreTask(id) {
   return rows[0] || null;
 }
 
+async function setTaskTags(taskId, tagIds) {
+  const client = await db.getClient();
+  try {
+    await client.query('BEGIN');
+    
+    // Remove existing tags
+    await client.query('DELETE FROM task_tags WHERE task_id = $1', [taskId]);
+    
+    // Insert new tags
+    if (tagIds.length > 0) {
+      const values = tagIds.map((tagId, index) =>
+        `($1, $${index + 2})`
+      ).join(',');
+      
+      await client.query(
+        `INSERT INTO task_tags (task_id, tag_id) VALUES ${values}`,
+        [taskId, ...tagIds]
+      );
+    }
+    
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
   createTask,
   listTasks,
@@ -197,4 +235,5 @@ module.exports = {
   deleteTask,
   archiveTask,
   restoreTask,
+  setTaskTags,
 };

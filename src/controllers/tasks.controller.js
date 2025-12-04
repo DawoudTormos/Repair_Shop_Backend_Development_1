@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const tasksService = require('../services/tasks.service');
 
 /**
  * Helper to build WHERE clauses based on query parameters.
@@ -41,9 +42,10 @@ async function create(req, res) {
     device_type_id,
     problem_type_id,
     status_id,
+    tags = [] // Add tags field with default empty array
   } = req.body;
 
-  // All fields are required per requirements
+  // Validate required fields
   if (
     !customer_fname ||
     !customer_lname ||
@@ -57,6 +59,11 @@ async function create(req, res) {
     !status_id
   ) {
     return res.status(400).json({ error: 'All task fields are required' });
+  }
+
+  // Validate tags if provided
+  if (tags && !Array.isArray(tags)) {
+    return res.status(400).json({ error: 'Tags must be an array of tag IDs' });
   }
 
   try {
@@ -86,7 +93,14 @@ async function create(req, res) {
         req.user.id, // creator
       ]
     );
-    res.status(201).json(rows[0]);
+    // If tags were provided, create associations
+    if (tags.length > 0) {
+      await tasksService.setTaskTags(rows[0].id, tags);
+    }
+
+    // Get full task details with tags
+    const fullTask = await tasksService.getTaskById(rows[0].id);
+    res.status(201).json(fullTask);
   } catch (err) {
     console.error('Create task error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -140,11 +154,11 @@ async function list(req, res) {
 async function get(req, res) {
   const { id } = req.params;
   try {
-    const { rows } = await db.query('SELECT * FROM tasks WHERE id = $1', [id]);
-    if (rows.length === 0) {
+    const task = await tasksService.getTaskById(id);
+    if (!task) {
       return res.status(404).json({ error: 'Task not found' });
     }
-    res.json(rows[0]);
+    res.json(task);
   } catch (err) {
     console.error('Get task error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -194,7 +208,17 @@ async function update(req, res) {
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Task not found' });
     }
-    res.json(rows[0]);
+    // Update tags if provided
+    if (req.body.tags) {
+      if (!Array.isArray(req.body.tags)) {
+        return res.status(400).json({ error: 'Tags must be an array of tag IDs' });
+      }
+      await tasksService.setTaskTags(id, req.body.tags);
+    }
+
+    // Get updated task with tags
+    const fullTask = await tasksService.getTaskById(id);
+    res.json(fullTask);
   } catch (err) {
     console.error('Update task error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -233,7 +257,9 @@ async function archive(req, res) {
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Task not found or already archived' });
     }
-    res.json(rows[0]);
+    // Return the full task (including tags) after archiving
+    const fullTask = await tasksService.getTaskById(id);
+    res.json(fullTask);
   } catch (err) {
     console.error('Archive task error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -255,7 +281,9 @@ async function restore(req, res) {
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Task not found or not archived' });
     }
-    res.json(rows[0]);
+    // Return the full task (including tags) after restoring
+    const fullTask = await tasksService.getTaskById(id);
+    res.json(fullTask);
   } catch (err) {
     console.error('Restore task error:', err);
     res.status(500).json({ error: 'Internal server error' });
