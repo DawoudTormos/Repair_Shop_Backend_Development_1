@@ -15,7 +15,7 @@ function buildFilters(params) {
     return { error: 'Start date and end date are required' };
   }
 
-  conditions.push(`created_at BETWEEN $${idx++} AND $${idx++}`);
+  conditions.push(`t.created_at BETWEEN $${idx++} AND $${idx++}`);
   values.push(startDate, endDate);
 
   return { conditions, values };
@@ -75,20 +75,28 @@ async function createTask(data, createdByUserId) {
 async function listTasks(query) {
   const { conditions, values, error } = buildFilters(query);
   if (error) {
-    // This should ideally be caught by the controller, but as a safeguard:
+    // Propagate filter error to caller
     throw new Error(error);
   }
   const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
+  // Total count for pagination
   const countResult = await db.query(
-    `SELECT COUNT(*) FROM tasks ${whereClause}`,
+    `SELECT COUNT(*) FROM tasks t ${whereClause}`,
     values
   );
   const total = parseInt(countResult.rows[0].count, 10);
 
+  // Retrieve tasks with their associated tags
   const dataResult = await db.query(
-    `SELECT * FROM tasks ${whereClause}
-     ORDER BY created_at DESC`,
+    `SELECT t.*,
+        COALESCE(json_agg(tg.*) FILTER (WHERE tg.id IS NOT NULL), '[]') AS tags
+     FROM tasks t
+     LEFT JOIN task_tags tt ON t.id = tt.task_id
+     LEFT JOIN tags tg ON tt.tag_id = tg.id
+     ${whereClause}
+     GROUP BY t.id
+     ORDER BY t.created_at DESC`,
     values
   );
 

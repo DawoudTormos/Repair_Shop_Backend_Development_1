@@ -119,29 +119,10 @@ async function list(req, res) {
     return res.status(400).json({ error: 'Start date and end date are required' });
   }
 
-  const { conditions, values, error } = buildFilters(req.query);
-  if (error) {
-    return res.status(400).json({ error });
-  }
-  const whereClause = `WHERE ${conditions.join(' AND ')}`;
-
   try {
-    const countResult = await db.query(
-      `SELECT COUNT(*) FROM tasks ${whereClause}`,
-      values
-    );
-    const total = parseInt(countResult.rows[0].count, 10);
-
-    const dataResult = await db.query(
-      `SELECT * FROM tasks ${whereClause}
-       ORDER BY created_at DESC`,
-      values
-    );
-
-    res.json({
-      total,
-      data: dataResult.rows,
-    });
+    const result = await tasksService.listTasks(req.query);
+    // result contains { total, data } where each task includes its tags
+    res.json(result);
   } catch (err) {
     console.error('List tasks error:', err);
     res.status(500).json({ error: 'Internal server error' });
