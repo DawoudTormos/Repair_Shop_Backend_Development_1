@@ -90,7 +90,9 @@ async function list(req, res) {
   }
 
   try {
-    const result = await tasksService.listTasks(req.query);
+    // Clone query to avoid modifying original request object
+    const queryParams = { ...req.query };
+    const result = await tasksService.listTasks(queryParams);
     // result contains { total, data } where each task includes its tags
     res.json(result);
   } catch (err) {

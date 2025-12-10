@@ -15,8 +15,12 @@ function buildFilters(params) {
     return { error: 'Start date and end date are required' };
   }
 
+  // Add one day to endDate to include full day
+  const adjustedEndDate = new Date(endDate);
+  adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+
   conditions.push(`t.created_at BETWEEN $${idx++} AND $${idx++}`);
-  values.push(startDate, endDate);
+  values.push(startDate, adjustedEndDate.toISOString());
 
   return { conditions, values };
 }
